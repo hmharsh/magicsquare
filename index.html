@@ -1,0 +1,549 @@
+<html>
+<head>
+	<title>Magic Square Game</title>
+ <!-- Include meta tag to ensure proper rendering and touch zooming -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="content-type" content="text/html" charset="UTF-8">
+  <!-- Include jQuery Mobile stylesheets -->
+  <link rel="stylesheet" href="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css">
+  <!-- Include the jQuery library -->
+  <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+  <!-- Include the jQuery Mobile library -->
+  <script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+  <script type="text/javascript">
+
+
+
+
+function setCookie(cname, cvalue, exdays) {
+    var d = new Date();
+    d.setTime(d.getTime() + (exdays*24*60*60*1000));
+    var expires = "expires="+ d.toUTCString();
+    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+}
+
+
+
+
+function getCookie(cname) {
+    var name = cname + "=";
+    var decodedCookie = decodeURIComponent(document.cookie);
+    var ca = decodedCookie.split(';');
+    for(var i = 0; i <ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+        }
+    }
+    return "";
+}
+
+
+function reset()
+{
+   setCookie("cname",3,1);
+   window.location.reload(true);
+}
+
+
+  $(document).ready(function(){
+
+/*$(".box").hide();*/
+  //$("#soun").val("true");
+   setCookie("soun", "true", "1")
+$('#checkbox-mini-0').click(function(){
+   console.log(this.checked);
+   if(this.checked == true) {
+     setCookie("soun", "true", "1")
+      
+    } else {
+       setCookie("soun", "false", "1")
+      // setCookie("sound", "1", "1")
+   }
+});
+
+
+      $("#alert").hide()
+      $("#warn").hide()
+  	//initialization of global variables
+//alert(getCookie("cname"));
+if(getCookie("cname"))
+{
+  window.n =getCookie("cname");
+ $("#lvl").html((window.n-1)/2);
+ //alert(window.n);
+}
+else{
+   window.n = 3;
+}
+
+
+ 
+             
+setTimeout(function(){ correctsolution();
+}, 1500);
+
+
+	
+declararray();
+//declare N*N 2d array  
+function declararray(){
+  var N = window.n;
+ window.a = new Array(N); // Array with initial size of N, not fixed!
+    for (var i = 0; i < N; ++i) {
+         window.a[i] = new Array(N);
+    }
+}   
+
+function playaudio(i){
+ // alert($("#soun").val());
+
+  if(getCookie("soun") === "true"){
+
+
+  if(i===1){
+       var audioElement = document.createElement('audio');
+        audioElement.setAttribute('src', 'h.mp3');
+        audioElement.setAttribute('autoplay', 'autoplay');
+        //audioElement.load()
+        $.get();
+        audioElement.addEventListener("load", function() {
+       // audioElement.play();
+        }, true);
+  }
+  else if(i===2)
+  {
+        var audioElement = document.createElement('audio');
+        audioElement.setAttribute('src', 'm.WAV');
+        audioElement.setAttribute('autoplay', 'autoplay');
+        //audioElement.load()
+        $.get();
+        audioElement.addEventListener("load", function() {
+       // audioElement.play();
+        }, true);
+  }
+
+    else if(i===3)
+  { //alert
+        var audioElement = document.createElement('audio');
+        audioElement.setAttribute('src', 'warn.WAV');
+        audioElement.setAttribute('autoplay', 'autoplay');
+        //audioElement.load()
+        $.get();
+        audioElement.addEventListener("load", function() {
+       // audioElement.play();
+        }, true);
+  }
+   else if(i===4)
+  { //win
+        var audioElement = document.createElement('audio');
+        audioElement.setAttribute('src', 'win.WAV');
+        audioElement.setAttribute('autoplay', 'autoplay');
+        //audioElement.load()
+        $.get();
+        audioElement.addEventListener("load", function() {
+       // audioElement.play();
+        }, true);
+  }
+
+
+}
+
+}
+
+//validation on input box to accept only numbers
+$(document).on('input', '.box', function() { 
+
+
+
+
+
+
+
+playaudio((Math.floor((Math.random() * 10) + 1)%2)+1);
+  
+        // audioElement.play();
+
+
+
+
+
+
+var z=0,q=0;
+        var abc = parseInt($(this).val());
+        if(isNaN(abc) || (abc ===0) ) { abc = '';q=1 }
+        $(this).val(abc);
+
+  //check if number already exist..
+setTimeout(function(){
+            for(var i=0;i<window.n;i++)
+                  {
+              for(var j=0;j<window.n;j++)
+                {
+
+                  if($("#a"+i+"b"+j).val()===$(this).val()){
+                    z++
+                    if(z === 2){
+                      abc = '';
+                      $("#a"+i+"b"+j).val('');
+                      if(q===0){
+                         $("#warn").show()
+                         setTimeout(function(){$("#warn").hide()}, 2000);
+                         playaudio(3);
+
+
+                      }
+                     
+                      z=0;
+                    }
+                    
+                  }
+                }
+              }
+              q=0;
+              },500);
+
+
+
+
+        //now checking for complition
+        var flag = 1
+        for(var i=0;i<window.n;i++)
+          {
+           for(var j=0;j<window.n;j++)
+            {
+           
+//alert(window.a[i][j] + "==" + $("#a"+i+"b"+j).val());
+                if($("#a"+i+"b"+j).val()==window.a[i][j])
+                {
+                 // alert("yes");
+                  flag = flag *1;
+                }
+                else{
+                //  alert(flag);
+                  flag = 0;
+                }
+            }
+          }
+          if(flag === 1){
+         //win!!!
+ //alert(window.n+"+2");
+
+        window.n = parseInt(window.n)+2;
+       // alert(window.n+"+2");
+        setCookie("cname", window.n, 1);
+       // alert(document.cookie);
+          
+         // window.open("#pagetwo",'_self');
+         $("#alert").show()
+         playaudio(4);
+       setTimeout(function(){$("#alert").hide()}, 1200);
+         $( "#ground" ).empty();
+         declararray();
+         correctsolution()
+            printbox();
+       $("#lvl").html((window.n-1)/2);
+
+
+          }
+
+ });
+
+
+
+printbox();
+//creating boxes
+function printbox(){
+
+
+  	for(var i=0;i<window.n;i++)
+  	{
+  			for(var j=0;j<window.n;j++)
+			  	{
+			  		$( "#ground" ).append(  "<input  type = 'text' onClick='this.select()' value = '' maxlength='2' size='5' class = 'box' id = a"+i+"b"+j+"  ></input>"  );
+			  	}
+          $( "#ground" ).append("</br>");
+  	} 
+    }      
+  });
+
+//on closeing the window :- confirmation box  
+/*  window.onbeforeunload = function() {
+    return "Hey, you're leaving the site. Bye!";
+   };*/
+//get correct solution in window.a   
+ function correctsolution(){
+  var key,k,l;
+  			
+      for(var i=0;i<window.n;i++)
+    {
+        for(var j=0;j<window.n;j++)
+          {
+            window.a[i][j]=0;
+          }
+   }
+
+
+
+
+  					window.a[0][(window.n-1)/2]=1;
+  					var z =window.n-1;
+
+  					j =z/2;
+            i=0;
+  					
+  				for( var key = 2; key<=(window.n*window.n) ; key++)
+  					{
+  				    	if(i>=1){
+  							k=i-1;
+  						}
+  						else{
+  							k=n-1;
+  						}
+  						if(j>=1){
+  							l=j-1;
+  						}
+  						else{
+  							l=n-1;
+  						}
+  						if(window.a[k][l]>=1)
+  						{
+                //alert("kkki = " + i+"j = "+j + "k = "+k)
+  							i=(i+1)%(window.n);
+  						}
+  						else
+  						{
+  							i=k;
+  							j=l;
+  						}
+               //alert("n = "+n+"i = " + i+"j = "+j + "k = "+k)
+  				    	window.a[i][j] = key;
+               
+  					}
+          
+//print into block for user whatever passed to it				
+/* */
+
+             }
+
+
+//print correct result 
+function printresult(){
+printarray(window.a);
+}
+
+function hint(){
+  //alert("h");
+  var x = 0;
+            for(var i=0;i<window.n;i++)
+                  {
+              for(var j=0;j<window.n;j++)
+                {
+                  if($("#a"+i+"b"+j).val() === ''){
+                    if(x===0){
+                      //alert("i="+i+" j="+j);
+                      $("#a"+i+"b"+j).val(a[i][j]);
+                      x++;
+                    }
+                    
+                  }
+
+                }
+              }
+              var u = "true";
+              if(x===0){
+                
+                 for( i=0;i<parseInt(window.n);i++)
+                    {
+                  for( j=0;j<parseInt(window.n);j++)
+                    {
+                       //if(u===0){
+                        
+                            if(parseInt($("#a"+i+"b"+j).val())!==parseInt(a[i][j])){
+//alert($("#a"+i+"b"+j).val() + "!==" + a[i][j]);
+
+                              if(u === "true"){
+                                 $("#a"+i+"b"+j).val(a[i][j]);
+                                 u = "false"
+                                 }
+                                 //break;
+                            }
+                            
+                      //}
+                    }
+                  }
+y=0;
+
+              }
+             
+}
+
+
+//print array passed to it
+  function printarray(a){
+  						for(var i=0;i<window.n;i++)
+			  	        {
+			  			for(var j=0;j<window.n;j++)
+						  	{
+						  		$("#a"+i+"b"+j).val(a[i][j]);
+						  	}
+						  }
+  } 
+
+
+
+//timer
+var timer = setInterval(clock, 1000);
+var msec = 00;
+var sec = 00;
+var min = 00;
+
+function clock() {
+  msec += 1;
+  if (msec == 60) {
+    sec += 1;
+    msec = 00;
+    if (sec == 60) {
+      sec = 00;
+      min += 1;
+      if (sec % 2 == 0) {
+        alert("Pair");
+      }
+    }
+  }
+  document.getElementById("timer").innerHTML = min + ":" + sec + ":" + msec;
+}
+
+
+
+
+
+
+
+  </script>
+
+
+<style type="text/css">
+    .box{
+          padding:12px;
+          text-align: center; 
+          font-size: 135%;
+          font-weight: bold;
+          font-family: Script MT;
+          border: 1px solid black;
+         }
+  .alert {
+    padding: 20px;
+    background-color: #f44336;
+    color: white;
+    opacity: 1;
+    transition: opacity 0.6s;
+    margin-bottom: 15px;
+}
+
+.alert.success {background-color: #4CAF50;}
+.alert.info {background-color: #2196F3;}
+.alert.warning {background-color: #ff9800;}
+
+.closebtn {
+    margin-left: 15px;
+    color: white;
+    font-weight: bold;
+    float: right;
+    font-size: 22px;
+    line-height: 20px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.closebtn:hover {
+    color: black;
+}
+   
+</style>
+
+
+</head>
+<body>
+
+
+
+
+
+
+
+
+<div data-role="page" id="pageone">
+  <div data-role="header">
+   <h1 align = "center">Magic Square Game</h1>
+  </div>
+  <div data-role="main" class="ui-content">
+ <div class="alert success" id = "alert">
+   <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span> 
+ 
+  <strong>Congratulations!</strong> Welcome To next level.
+</div>
+ <div class="alert warning" id = "warn">
+   <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span> 
+ 
+  <p>Enter a valid number, Duplicate numbers also not allowed!!</p>
+</div>
+  </br>
+  <input type="checkbox" name="checkbox-mini-0" id="checkbox-mini-0" data-mini="true" checked><p>Sound</p>
+  </br><div>Level - <div id= "lvl"> 1</div></div>
+ </br> Time<div id="timer"></div>
+		  <div align = "center" id = "ground">
+		  </div>
+
+		  <div align = "center">
+
+<!-- <input type = "text" id = "soun" hidden="true"> -->
+      <a align = "center" class = "ui-btn ui-btn-inline" onclick = "reset()">Reset Game</a>
+      <a align = "center" class = "ui-btn ui-btn-inline" onclick = "hint()">Hint</a>
+		  <a align = "center" class = "ui-btn ui-btn-inline"  onclick = "printresult()">correct solution</a>
+		  <a href = "#how" align = "center" class = "ui-btn ui-btn-inline" >How To Play</a>
+
+
+		 
+		</div>
+  </div>
+</div>
+
+
+<!-- <div data-role="page" data-dialog="true" id="pagetwo" style="widows: 1000px;">
+  <div data-role="header">
+    <h1 align = "center">Magic Square Game</h1>
+  </div>
+
+  <div data-role="main" class="ui-content">
+    <p>Congratulations You win..</p> 
+  </div>
+</div>  -->
+
+
+
+<div data-role="page" data-dialog="true" id="how">
+  <div data-role="header">
+    <h1 align = "center">Magic Square Game</h1>
+  </div>
+
+  <div data-role="main" class="ui-content">
+  	<p>Fill numbers and create magic square</p>
+    <img src = "ms.png"></img>
+  </div>
+</div> 
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
